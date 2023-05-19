@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reproductor de acordes</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Reproductor de acordes</h1>
+    <input id="acordeInput" type="text" placeholder="Introduce un acorde">
+    <button onclick="tocarAcorde()">Tocar</button>
+    <audio id="audioAcorde"></audio>
+  </div>
+
+  <script>// Crear el contexto de audio
+var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+function tocarAcorde() {
+  var acorde = document.getElementById("acordeInput").value;
+
+  // Cargar el archivo de sonido correspondiente al acorde
+  var audioURL = "acordes/" + acorde + ".mp3";
+
+  // Crear una instancia de XMLHttpRequest para cargar el archivo de sonido
+  var request = new XMLHttpRequest();
+  request.open("GET", audioURL, true);
+  request.responseType = "arraybuffer";
+
+  // Manejar la respuesta del archivo de sonido
+  request.onload = function() {
+    audioContext.decodeAudioData(request.response, function(buffer) {
+      // Crear un nodo fuente de audio
+      var source = audioContext.createBufferSource();
+      source.buffer = buffer;
+
+      // Conectar el nodo fuente de audio al destino de salida (altavoces)
+      source.connect(audioContext.destination);
+
+      // Reproducir el acorde
+      source.start(0);
+    }, function(error) {
+      console.error("Error al decodificar el archivo de sonido", error);
+    });
+  };
+
+  // Enviar la solicitud para cargar el archivo de sonido
+  request.send();
+}
+</script>
+</body>
+</html>
+
+
+.container {
+  text-align: center;
+  margin-top: 100px;
+}
+
+input[type="text"], button {
+  padding: 10px;
+  font-size: 16px;
+  margin: 10px;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+}
+
+button:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+
+function tocarAcorde() {
+  var acorde = document.getElementById("acordeInput").value;
+
+  // Aquí puedes implementar la lógica para reproducir el acorde utilizando la biblioteca de audio de tu elección.
+  // Por ejemplo, podrías usar la API Web Audio o un reproductor de audio incorporado.
+
+  // En este ejemplo, simplemente actualizaremos la fuente de audio con un archivo de sonido pregrabado que coincida con el acorde ingresado.
+  var audio = document.getElementById("audioAcorde");
+  audio.src = "acordes/" + acorde + ".mp3";
+  audio.play();
+}
